@@ -166,7 +166,6 @@ export default function ChartCard({ symbol, interval, onSignalsDetected }: Props
     };
 
     // Execute fetch and capture cancellation closure
-    let cancelCallback: (() => void) | undefined;
     
     // Initial fetch
     fetchData().then(() => {

@@ -45,7 +45,7 @@ export async function GET(request: Request) {
     // Try Global
     try {
         res = await fetch(url, { signal: AbortSignal.timeout(3000) }); // Fast timeout
-    } catch (e) {
+    } catch {
         console.warn("Binance Global fetch failed/timed out");
     }
 
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
         console.warn(`Binance Global API failed, trying Binance US...`);
         try {
              res = await fetch(urlUS, { signal: AbortSignal.timeout(3000) });
-        } catch (e) {
+        } catch {
             console.warn("Binance US fetch failed/timed out");
         }
     }

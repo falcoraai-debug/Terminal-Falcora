@@ -26,7 +26,8 @@ export async function POST(request: Request) {
         embeds
     });
 
-    return NextResponse.json({ hash: result.hash });
+    // Cast result to any to access hash if it's missing in the type definition
+    return NextResponse.json({ hash: (result as any).hash });
   } catch (error) {
     console.error('Cast Error:', error);
     return NextResponse.json({ error: 'Failed to cast' }, { status: 500 });
