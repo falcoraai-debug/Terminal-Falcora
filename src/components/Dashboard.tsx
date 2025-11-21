@@ -79,6 +79,7 @@ export default function Dashboard() {
     try {
       const caption = await generateCaption();
       const imageUrl = await captureAndUpload();
+      // Cast with imageUrl in embeds
       const castData = await executeCast(caption, [{ url: imageUrl }]);
 
       const newItem: CastHistoryItem = {
@@ -114,10 +115,11 @@ export default function Dashboard() {
       const caption = await generateCaption();
       const imageUrl = await captureAndUpload();
       
-      // Generate Frame URL
-      const appUrl = window.location.origin; // Or process.env.NEXT_PUBLIC_APP_URL
+      // Generate Frame URL - Ensure it points to the Frame API endpoint, NOT the image
+      const appUrl = process.env.NEXT_PUBLIC_URL || window.location.origin;
       const frameUrl = `${appUrl}/api/frames?pair=${pair}&interval=${interval}&img=${encodeURIComponent(imageUrl)}`;
       
+      // Cast with frameUrl in embeds
       const castData = await executeCast(caption, [{ url: frameUrl }]);
       
       const newItem: CastHistoryItem = {

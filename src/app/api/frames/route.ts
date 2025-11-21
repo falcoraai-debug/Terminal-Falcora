@@ -6,44 +6,43 @@ export async function GET(req: NextRequest) {
   const interval = searchParams.get('interval') || '1h';
   const img = searchParams.get('img');
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  const targetUrl = `${appUrl}?pair=${pair}&interval=${interval}`;
+  const appUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000';
   
-  // Fallback image if none provided (e.g. default OG)
+  // Ensure we have a valid image URL
   const displayImage = img || `${appUrl}/api/og`;
 
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta property="og:title" content="Terminal Cast: ${pair} ${interval}" />
-        <meta property="og:image" content="${displayImage}" />
-        <meta property="fc:frame" content="vNext" />
-        <meta property="fc:frame:image" content="${displayImage}" />
-        
-        <meta property="fc:frame:button:1" content="Regen AI" />
-        <meta property="fc:frame:button:1:action" content="link" />
-        <meta property="fc:frame:button:1:target" content="${targetUrl}&action=ai" />
-        
-        <meta property="fc:frame:button:2" content="Refresh Chart" />
-        <meta property="fc:frame:button:2:action" content="link" />
-        <meta property="fc:frame:button:2:target" content="${targetUrl}&action=refresh" />
-        
-        <title>Terminal Cast: ${pair}</title>
-      </head>
-      <body style="background: #000; color: #8b5cf6; font-family: monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0;">
-        <h1>${pair} ${interval}</h1>
-        <img src="${displayImage}" alt="Chart" style="max-width: 90%; border: 1px solid #4c1d95;" />
-        <p style="margin-top: 20px;">Terminal Cast by FALCORA</p>
-      </body>
-    </html>
-  `;
+  // Return Farcaster Frame vNext JSON
+  const frameMetadata = {
+    version: "vNext",
+    title: `Terminal Cast • ${pair} ${interval}`,
+    description: `Terminal Cast by FALCORA — ${pair} ${interval}`,
+    image: displayImage,
+    buttons: [
+       { label: "Regen AI", action: "post", target: `${appUrl}/api/frames?act=regen` },
+       { label: "Refresh Chart", action: "post", target: `${appUrl}/api/frames?act=snap` }
+    ],
+    post_url: `${appUrl}/api/frames`,
+    footer: "Terminal Cast by FALCORA"
+  };
 
-  return new NextResponse(html, {
-    headers: { 'Content-Type': 'text/html' },
-  });
+  return NextResponse.json(frameMetadata);
 }
 
 export async function POST(req: NextRequest) {
+    const searchParams = req.nextUrl.searchParams;
+    const act = searchParams.get('act');
+    
+    if (act === 'regen') {
+        // TODO: Implement regeneration logic
+        // For now, return the same frame structure or update it
+        return GET(req);
+    }
+    
+    if (act === 'snap') {
+        // TODO: Implement refresh logic
+        return GET(req);
+    }
+
+    // Default behavior
     return GET(req);
 }

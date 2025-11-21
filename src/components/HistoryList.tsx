@@ -24,7 +24,10 @@ export default function HistoryList({ onRecast, refreshTrigger }: Props) {
         {history.map((item, idx) => (
           <div key={idx} className="flex items-center justify-between p-2 border border-violet-900/20 bg-violet-900/5 hover:bg-violet-900/10 transition-colors">
             <div className="flex flex-col">
-               <span className="text-xs text-violet-300 font-mono font-bold">{item.pair} <span className="opacity-50">|</span> {item.interval}</span>
+               <span className="text-xs text-violet-300 font-mono font-bold">
+                   {item.pair} <span className="opacity-50">|</span> {item.interval}
+                   <span className="ml-2 text-violet-500/50 text-[9px]">[{item.frameUrl ? 'FRAME' : 'IMG'}]</span>
+               </span>
                <span className="text-[10px] text-violet-500 font-mono truncate max-w-[200px]">{item.caption}</span>
             </div>
             <div className="flex items-center gap-2">

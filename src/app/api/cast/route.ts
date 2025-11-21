@@ -20,6 +20,10 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Signer UUID required (Client or Server ENV)' }, { status: 401 });
     }
 
+    // Level-2: Handle Frame embeds
+    // If we receive an embed that is our own frame URL, we should ensure it's passed correctly.
+    // The client already constructs the correct embeds array: [{ url: frameUrl }] or [{ url: imageUrl }]
+    
     const result = await client.publishCast({
         signerUuid: finalSignerUuid,
         text,

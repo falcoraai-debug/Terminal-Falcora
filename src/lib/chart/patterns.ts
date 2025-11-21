@@ -148,5 +148,11 @@ export function detectPatterns(
       });
   }
 
+  // 6. Breakout Detection relative to EMA99
+  if (prevPrice.close < lastEma99 && lastPrice.close > lastEma99) {
+      // Already covered by "EMA99 BREAKOUT" above, but we can add a specific breakout signal if needed.
+      // The existing check #4 covers this logic.
+  }
+
   return signals;
 }
