@@ -1,14 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import { useMiniApp } from "@neynar/react";
 import Dashboard from "./Dashboard";
 
-export interface AppProps {
-  title?: string;
-}
-
-export default function App({ title }: AppProps) {
+export default function App() {
   const { isSDKLoaded } = useMiniApp();
 
   if (!isSDKLoaded) {

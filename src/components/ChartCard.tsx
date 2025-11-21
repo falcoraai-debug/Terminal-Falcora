@@ -169,23 +169,20 @@ export default function ChartCard({ symbol, interval, onSignalsDetected }: Props
     let cancelCallback: (() => void) | undefined;
     
     // Initial fetch
-    fetchData().then((cancel) => {
-        cancelCallback = cancel;
+    fetchData().then(() => {
+        // Initial fetch complete
     });
     
     // Auto-Refresh every 60s
     const intervalId = setInterval(() => {
-        fetchData().then((cancel) => {
-             // We don't necessarily need to store cancel callback for interval updates 
-             // as long as they handle isCancelled correctly internally
-        });
+        fetchData();
     }, 60000);
 
     const handleResize = () => {
         if (chartContainerRef.current && chartRef.current) {
              try {
                 chartRef.current.applyOptions({ width: chartContainerRef.current.clientWidth });
-             } catch(e) {
+             } catch {
                  // ignore resize on disposed chart
              }
         }
@@ -197,18 +194,16 @@ export default function ChartCard({ symbol, interval, onSignalsDetected }: Props
         clearInterval(intervalId);
         window.removeEventListener('resize', handleResize);
         
-        if (cancelCallback) cancelCallback();
-        
         try {
             if (chartRef.current) {
                 chartRef.current.remove();
                 chartRef.current = null;
             }
-        } catch(e) {
+        } catch {
             // ignore
         }
     };
-  }, [symbol, interval]); // Re-run everything when symbol/interval changes
+  }, [symbol, interval, onSignalsDetected]); // Re-run everything when symbol/interval changes
 
   return (
     <div className="relative w-full bg-black border border-violet-900/50 rounded-sm p-1 overflow-hidden mb-4" id="chart-capture-target">
