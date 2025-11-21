@@ -8,9 +8,7 @@ const AppComponent = dynamic(() => import("~/components/App"), {
   ssr: false,
 });
 
-export default function App(
-  { title }: { title?: string } = { title: APP_NAME }
-) {
+export default function App() {
   // Removed title prop passed to AppComponent as it no longer accepts props
   return <AppComponent />;
 }

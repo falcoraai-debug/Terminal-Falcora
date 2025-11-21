@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
-import { createChart, ColorType, IChartApi, ISeriesApi, CandlestickSeries, LineSeries, CrosshairMode } from 'lightweight-charts';
+import { createChart, ColorType, IChartApi, ISeriesApi, CandlestickSeries, LineSeries, CrosshairMode, Time } from 'lightweight-charts';
 import { processChartData, generateIndicators } from '~/lib/chart/indicators';
 import { detectPatterns, PatternSignal } from '~/lib/chart/patterns';
 
@@ -121,19 +121,25 @@ export default function ChartCard({ symbol, interval, onSignalsDetected }: Props
             
             if (isCancelled) return;
 
-            const data = processChartData(rawData);
+            const data = processChartData(rawData).map(d => ({
+                ...d,
+                time: d.time as Time
+            }));
             
             if (data.length === 0) throw new Error('No data received');
 
             const indicators = generateIndicators(rawData);
+            const ema5 = indicators.ema5.map(d => ({ ...d, time: d.time as Time }));
+            const ema25 = indicators.ema25.map(d => ({ ...d, time: d.time as Time }));
+            const ema99 = indicators.ema99.map(d => ({ ...d, time: d.time as Time }));
 
             // Ensure chart is still valid before updating data
             if (chartRef.current) {
                 try {
                     if (candleSeries) candleSeries.setData(data);
-                    if (ema5Series) ema5Series.setData(indicators.ema5);
-                    if (ema25Series) ema25Series.setData(indicators.ema25);
-                    if (ema99Series) ema99Series.setData(indicators.ema99);
+                    if (ema5Series) ema5Series.setData(ema5);
+                    if (ema25Series) ema25Series.setData(ema25);
+                    if (ema99Series) ema99Series.setData(ema99);
 
                     // Fit content
                     chart.timeScale().fitContent();
